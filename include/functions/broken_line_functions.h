@@ -4,7 +4,8 @@
 #include<stdlib.h>
 #include<random>
 #include<conio.h>
-
+#include<cmath>
+#include<windows.h>
 
 using namespace std;
 
@@ -43,6 +44,11 @@ namespace broken_line {
 			cout << x << " " << y << endl;
 		}
 	};
+	template<typename T>
+	ostream& operator<<(ostream& potok, Point<T>& point) {
+		cout << point.x << " " << point.y;
+		return potok;
+	}
 
 	template<typename T>
 	class BrokenLine {
@@ -65,18 +71,24 @@ namespace broken_line {
 				_data[i] = new Point<T>;
 			_size = size;
 		}
-		BrokenLine(int count, T x1, T x2, T y1, T y2) {
+		BrokenLine(int count, T x1, T x2, T y1, T y2) { // Диапазон точек
 				_data = new Point<T>*[count];
 				for (int i = 0; i < count; ++i)
 					_data[i] = new Point<T>(random(x1,x2), random(y1,y2));
 				_size = count;
+		}
+		BrokenLine(BrokenLine<T>& other) {
+			_data = new Point<T>*[other._size];
+			for (int i = 0; i < other._size; ++i)
+				_data[i] = new Point<T>(other[i]);
+			_size = other._size;
 		}
 		~BrokenLine() {
 			for (int i = 0; i < _size; ++i)
 				delete _data[i];
 			delete[] _data;
 		}
-		void push_back(Point<T>& point) {
+		void push_back(Point<T>& point) { // Сложение ломаной и вершины
 			Point<T>** copy = new Point<T>*[_size + 1];
 			for (int i = 0; i < _size; ++i)
 				copy[i] = new Point<T>(*_data[i]);
@@ -87,7 +99,7 @@ namespace broken_line {
 			_data = copy;
 			_size++;
 		}
-		void push_front(Point<T>& point) {
+		void push_front(Point<T>& point) { // Слоение вершины и ломаной
 			Point<T>** copy = new Point<T>*[_size + 1];
 			for (int i = 1; i < _size+1; ++i)
 				copy[i] = new Point<T>(*_data[i-1]);
@@ -98,23 +110,32 @@ namespace broken_line {
 			_data = copy;
 			_size++;
 		}
-		float len() {
+		float len() { // Вычисление длины
 			float len = 0;
 			for (int i = 1; i < _size; ++i) {
 				len += (*_data[i]).len(*_data[i - 1]);
 			}
 			return len;
 		}
+		void swap(BrokenLine<T>& rhs)noexcept {
+			std::swap(_size, rhs._size);
+			std::swap(_data, rhs._data);
+		}
 		Point<T>& operator[](size_t index) { //Оператор для чтения/записи по индексу
 			return *_data[index];
 		}
-		BrokenLine<T> operator+(BrokenLine<T>& rhs) {
+		BrokenLine<T> operator+(BrokenLine<T>& rhs) { // Сложение двух ломаных
 			BrokenLine<T> new_line(*_data[0]);
 			for (int i = 1; i <_size; ++i)
 				new_line.push_back(*_data[i]);
 			for (int i = 0; i < rhs._size; ++i)
 				new_line.push_back(*rhs._data[i]);
 			return new_line;
+		}
+		BrokenLine& operator=(BrokenLine<T>& other) {
+			BrokenLine copy(other);
+			swap(copy);
+			return *this;
 		}
 		int size() {
 			return _size;
@@ -124,5 +145,33 @@ namespace broken_line {
 				(*_data[i]).print();
 		}
 	};
-
+	template<typename T>
+	ostream& operator<<(ostream& potok, BrokenLine<T>& line) {
+		for (int i = 0; i < line.size(); ++i) {
+			cout << line[i] << endl;
+		}
+		return potok;
+	}
+	void draw_trapezoid() {
+		double a, b, c, d, h;
+		cout << "Input x1 coordinates >>>" << endl;
+		cin >> a;
+		cout << "Input y1 coordinates >>>" << endl;
+		cin >> b;
+		cout << "Input x2 coordinates >>>" << endl;
+		cin >> c;
+		cout << "Input y2 coordinates >>>" << endl;
+		cin >> d;
+		Point x(a, b);
+		Point y(c, d);
+		cout << "Input h >>>" << endl;
+		cin >> h;
+		BrokenLine line(x);
+		line.push_back(y);
+		Point f(y.x, y.y + h);
+		line.push_back(f);
+		Point e(random(0.0, f.x), f.y);
+		line.push_back(e);
+		cout << line << endl;
+	}
 };
