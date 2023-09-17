@@ -13,29 +13,25 @@ TEST(FunctionsTests,PointTest) {
 	EXPECT_NEAR(a.len(b),1,0.1);
 	EXPECT_TRUE(a==c);
 	EXPECT_TRUE(a == d);
-	cout << b;
 }
 
 TEST(FunctionsTests, BrokenLineTest) {
-	Point<float> point_1(1.1, 2.2);
-	Point<float> point_2(3.3, 4.4);
-	BrokenLine<float> line_1(point_1);
-	cout << line_1;
-	cout << endl;
-	BrokenLine<float> line_2(5);
-	cout << line_2;
-	cout << endl;
-	BrokenLine<float> line_3(5, 0, 10, 0, 20);
-	cout << line_3;
-	cout << endl;
-	line_1[0] = point_2;
-	line_3.push_back(point_2);
-	line_3.push_front(point_1);
-	cout << line_3.len()<<endl;
-	BrokenLine<float> line_4 = line_1 + line_2;
-	cout<<line_4;
+	BrokenLine<int> line_1();
+	Point point_2(1.1,1.1);
+	BrokenLine line_2(point_2);
+	BrokenLine<double> line_3(5);
+	BrokenLine<int> line_4(4,1,1,5,5);
+	BrokenLine line_5(line_2);
+	Point point_3(5.5, 5.5);
+	Point point_4(6.6, 6.6);
+	line_5.push_back(point_3);
+	line_5.push_front(point_4);
+	EXPECT_TRUE(line_5[0] == point_4);
+	EXPECT_TRUE(line_5[line_5.size()-1] == point_3);
+	EXPECT_NEAR(line_5.len(), 14, 0.001);
+	line_5 = line_2;
+	BrokenLine<double> line_6 = line_5 + line_2;
 }
-
 	//• конструктор с параметром : координата точки;
 	//• конструктор с параметром : количество точек;
 	//• конструктор с параметрами(создает ломаную из точек, координаты каждой из которых лежат в диапазоне[m1, m2];

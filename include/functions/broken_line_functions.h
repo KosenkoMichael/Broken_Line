@@ -6,6 +6,7 @@
 #include<conio.h>
 #include<cmath>
 #include<windows.h>
+#include<stdexcept>
 
 using namespace std;
 
@@ -122,6 +123,8 @@ namespace broken_line {
 			std::swap(_data, rhs._data);
 		}
 		Point<T>& operator[](size_t index) { //Оператор для чтения/записи по индексу
+			if (index >= _size)
+				throw("index is out of tange");
 			return *_data[index];
 		}
 		BrokenLine<T> operator+(BrokenLine<T>& rhs) { // Сложение двух ломаных
@@ -140,10 +143,6 @@ namespace broken_line {
 		int size() {
 			return _size;
 		}
-		void print() {
-			for (int i = 0; i < _size; ++i)
-				(*_data[i]).print();
-		}
 	};
 	template<typename T>
 	ostream& operator<<(ostream& potok, BrokenLine<T>& line) {
@@ -154,24 +153,24 @@ namespace broken_line {
 	}
 	void draw_trapezoid() {
 		double a, b, c, d, h;
-		cout << "Input x1 coordinates >>>" << endl;
-		cin >> a;
-		cout << "Input y1 coordinates >>>" << endl;
-		cin >> b;
-		cout << "Input x2 coordinates >>>" << endl;
-		cin >> c;
-		cout << "Input y2 coordinates >>>" << endl;
-		cin >> d;
-		Point x(a, b);
-		Point y(c, d);
-		cout << "Input h >>>" << endl;
-		cin >> h;
-		BrokenLine line(x);
-		line.push_back(y);
-		Point f(y.x, y.y + h);
-		line.push_back(f);
-		Point e(random(0.0, f.x), f.y);
-		line.push_back(e);
-		cout << line << endl;
+			cout << "Input x1 coordinates >>>" << endl;
+			cin >> a;
+			cout << "Input y1 coordinates >>>" << endl;
+			cin >> b;
+			cout << "Input x2 coordinates >>>" << endl;
+			cin >> c;
+			cout << "Input y2 coordinates >>>" << endl;
+			cin >> d;
+			Point x(a, b);
+			Point y(c, d);
+			cout << "Input h >>>" << endl;
+			cin >> h;
+			BrokenLine line(x);
+			line.push_back(y);
+			Point f(y.x, y.y + h);
+			line.push_back(f);
+			Point e(random(-f.x, f.x), f.y);
+			line.push_back(e);
+			cout << line << endl;
 	}
 };
